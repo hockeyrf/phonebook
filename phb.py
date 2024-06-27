@@ -1,3 +1,8 @@
+'''
+tkinter short manual:
+https://metanit.com/python/tkinter/
+'''
+
 def work_with_phonebook():
     choic e =show_menu()
     phone_boo k =read_txt('phon.txt')
