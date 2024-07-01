@@ -7,8 +7,14 @@ phone_book = []
 fields = ['Фамилия', 'Имя', 'Телефон', 'Описание']
 
 root = Tk()  # создаем корневой объект - окно
-root.title("Приложение на Tkinter")  # устанавливаем заголовок окна
-root.geometry("1024x768")  # устанавливаем размеры окна
+root.title("Телефонный справочник")
+root.geometry("1024x768")
+
+
+for column in range(4):
+    root.columnconfigure(index=column, weight=1)
+for row in range(5):
+    root.rowconfigure(index=row, weight=1)
 
 
 def warning_dialog(text: str):
@@ -36,7 +42,8 @@ def check_record_exist(text: str) -> bool:
     return False
 
 
-def add_record(last_name: str, name: str, phone: str, desc: str):
+def add_record(data: tuple):
+    print(data[0])
     if len(phone) > 0 and check_record_exist(phone):
         warning_dialog('Такой номер существует')
     if all([len(last_name), len(name), len(phone), len(desc)]):
@@ -49,13 +56,7 @@ def update_listbox(records: Listbox):
     for item in phone_book:
         print(item)
         # records.insert(f'{item[0]}\n {item[1]}\n {item[2]}\n {item[3]}')
-        records.insert(END, f"{item.get('Фамилия')}\n {item.get('Имя')}\n {item.get('Телефон')}\n {item.get('Описание')}")
-
-
-for column in range(4):
-    root.columnconfigure(index=column, weight=1)
-for row in range(5):
-    root.rowconfigure(index=row, weight=1)
+        records.insert(END, f"|{item.get('Фамилия')} {item.get('Имя')} {item.get('Телефон')} {item.get('Описание')}|")
 
 
 def create_frame(label_text):
@@ -66,6 +67,11 @@ def create_frame(label_text):
     entry.pack(anchor=NW)
     return frame, entry
 
+def clear_fields():
+    last_name.delete(0, END)
+    name.delete(0, END)
+    phone.delete(0, END)
+    description.delete(0, END)
 
 last_name_frame, last_name = create_frame("Фамилия")
 last_name_frame.grid(row=0, column=0)
@@ -79,7 +85,8 @@ phone_frame.grid(row=2, column=0)
 desc_frame, description = create_frame("Описание")
 desc_frame.grid(row=3, column=0)
 
-add_rec_butt = ttk.Button(text='Добавить', command=lambda: add_record(last_name.get(), name.get(), phone.get(), description.get()))
+
+add_rec_butt = ttk.Button(text='Добавить', command=lambda: add_record((last_name.get(), name.get(), phone.get(), description.get())) and clear_fields())
 add_rec_butt.grid(row=4, column=0)
 
 
@@ -92,7 +99,6 @@ add_new_button.grid(row=1, column=2)
 
 records = Listbox()
 records.grid(row=0, column=1, rowspan=5, sticky=NSEW)
-
 
 read_all()
 update_listbox(records)
